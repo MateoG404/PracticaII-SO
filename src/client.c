@@ -5,9 +5,11 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <unistd.h>
+#include "interfaz.h"
 
+int* input();
 
-#define PORT 8080
+#define PORT 3535
 #define serverIP "127.0.0.1"
 
 int main(){
@@ -42,25 +44,21 @@ int main(){
         exit(-1);
     }
 
-
     // Creación conexión cliente al servidor
 
     if (connect(client_fd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0) {
         perror("Error al conectar al servidor");
         exit(EXIT_FAILURE);
     }
-    
+    //Llamar a interfaz para pedir los datos al usuario
     int data[3];
-
-    printf("Ingrese el primer dato: ");
-    scanf("%d", &data[0]);
-
-    printf("Ingrese el segundo dato: ");
-    scanf("%d", &data[1]);
-
-    printf("Ingrese el tercer dato: ");
-    scanf("%d", &data[2]);
-
+    int *data2 = input();
+    
+    for (int i = 0; i < 3; i++)
+    {
+        data[i] = *(data2+i);
+    }
+    
     // Envío de los datos al servidor
     if (send(client_fd, data, sizeof(data), 0) < 0) {
         perror("Error al enviar datos al servidor");
@@ -68,17 +66,15 @@ int main(){
     }
 
     // Recibir datos
-    char buffer[32];
+    char buffer[1024];
 
     r = recv(client_fd,buffer,sizeof(buffer),0);
     buffer[r] = 0 ;
 
-    printf("Mensaje recibido es :\n%s",buffer);
-
+    printf(buffer);
     // Cerrar la conexión
     close(client_fd);
 
-    printf("Final cliente \n");
 
     return 0;
 }
