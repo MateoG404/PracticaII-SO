@@ -65,8 +65,8 @@ int main(){
             perror("Error al aceptar la conexión del cliente");
             exit(EXIT_FAILURE);
         }
-        log();
-        printf("Cliente conectado: %s:%d\n", inet_ntoa(clientAddress.sin_addr), ntohs(clientAddress.sin_port));
+        char* clientIpAdd = inet_ntoa(clientAddress.sin_addr);
+        printf("Cliente conectado: %s:%d\n", clientIpAdd, ntohs(clientAddress.sin_port));
         num_clientes ++;
 
         // Recibir datos del cliente
@@ -87,6 +87,9 @@ int main(){
         resultado = search(data);
         //Descomentar si desea ver el resultado de la busqueda
         //printf("Resultado busqueda %f \n",resultado);   
+
+        //Creación del archivo log
+        log(clientIpAdd, data, resultado);
 
         // Enviar datos al cliente  
         char message[1024];
@@ -110,8 +113,15 @@ int main(){
     return 0;
 }
  
-void log() {
+void log(char* addr, int* data, float res) {
     //Aca va la funcion de log de gestionar un archivo log
+
+    FILE *fileLog = fopen("../data/server.log", "a+"); //En modo "a" para que el puntero esté al final del archivo
+
     //que se guarde la info en el formato [Fecha YYYYMMDDTHHMMSS] Cliente [IP] [búsqueda - origen - destino]
+    char* message;
+
+    sprintf(message, "[Fecha %s] Cliente [IP] [Resultado búsqueda:%f - origen: %d - destino: %d]\n", fecha, addr, res, data[0], data[1]);
+
     return;
 }
