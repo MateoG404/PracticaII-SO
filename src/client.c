@@ -58,23 +58,27 @@ int main(){
     {
         data[i] = *(data2+i);
     }
-    
-    // Envío de los datos al servidor
-    if (send(client_fd, data, sizeof(data), 0) < 0) {
-        perror("Error al enviar datos al servidor");
-        exit(EXIT_FAILURE);
+
+    if(data[2] == 24){
+        printf("El usuario ha salido del programa, se cerrará el cliente\n");
+        close(client_fd);
+    }else{
+        // Envío de los datos al servidor
+        if (send(client_fd, data, sizeof(data), 0) < 0) {
+            perror("Error al enviar datos al servidor");
+            exit(EXIT_FAILURE);
+        }
+
+        // Recibir datos
+        char buffer[1024];
+
+        r = recv(client_fd,buffer,sizeof(buffer),0);
+        buffer[r] = 0 ;
+
+        printf(buffer);
+        // Cerrar la conexión
+        close(client_fd);
     }
-
-    // Recibir datos
-    char buffer[1024];
-
-    r = recv(client_fd,buffer,sizeof(buffer),0);
-    buffer[r] = 0 ;
-
-    printf(buffer);
-    // Cerrar la conexión
-    close(client_fd);
-
 
     return 0;
 }

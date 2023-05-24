@@ -15,7 +15,7 @@ int main();
 #define BACKLOG 3
 int main(){
     
-    int server_id,r, client_id; 
+    int server_id,r, client_id, num_clientes = 0; 
     struct sockaddr_in serverAddress, clientAddress; // Conexión a servidor
     float resultado = -1;
     int sourceid,dstid,hod;
@@ -52,8 +52,8 @@ int main(){
         exit(EXIT_FAILURE);
     }
     
-    printf("Esperando conexiones entrantes...\n");
-    while (1)
+    printf("Esperando conexiones entrantes (max 32)...\n");
+    while (num_clientes <= 32)
     {
         // Creación Accept
         // Aceptar conexiones de clientes entrantes
@@ -67,7 +67,7 @@ int main(){
         }
         log();
         printf("Cliente conectado: %s:%d\n", inet_ntoa(clientAddress.sin_addr), ntohs(clientAddress.sin_port));
-        
+        num_clientes ++;
 
         // Recibir datos del cliente
         int data[3];
@@ -77,8 +77,8 @@ int main(){
             exit(EXIT_FAILURE);
         }
         //Descomentar si desea ver los datos recibidos
-        /*
-        printf("Datos recibidos del cliente:\n");
+        
+        /*printf("Datos recibidos del cliente:\n");
         for (int i = 0; i < 3; i++) {
             printf("Dato %d: %d\n", i+1, data[i]);
         }*/
@@ -90,7 +90,12 @@ int main(){
 
         // Enviar datos al cliente  
         char message[1024];
-        sprintf(message, "El tiempo medio de viaje es: %f\n", resultado);
+        if(resultado < 0){
+            sprintf(message, "Resultado busqueda: NA\n");  
+        }else{
+            sprintf(message, "El tiempo medio de viaje es: %f\n", resultado);
+        }
+        
 
         // Creación Send 
         if (send(client_id, message, strlen(message), 0) < 0) {
