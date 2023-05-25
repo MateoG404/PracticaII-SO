@@ -9,10 +9,12 @@
 #include "search.h"
 
 float search(int data[3]);
-void log();
+void archLog(char* addr, int* data, float res);
 int main();
+
 #define PORT 3535
 #define BACKLOG 3
+
 int main(){
     
     int server_id,r, client_id, num_clientes = 0; 
@@ -89,7 +91,7 @@ int main(){
         //printf("Resultado busqueda %f \n",resultado);   
 
         //Creación del archivo log
-        log(clientIpAdd, data, resultado);
+        archLog(clientIpAdd, data, resultado);
 
         // Enviar datos al cliente  
         char message[1024];
@@ -113,15 +115,42 @@ int main(){
     return 0;
 }
  
-void log(char* addr, int* data, float res) {
+void archLog(char* addr, int* data, float res) {
     //Aca va la funcion de log de gestionar un archivo log
 
-    FILE *fileLog = fopen("../data/server.log", "a+"); //En modo "a" para que el puntero esté al final del archivo
+    FILE *fileLog = fopen("../data/serverlog.txt", "r+"); //Se abre el archivo con permisos de lectura y escritura
 
-    //que se guarde la info en el formato [Fecha YYYYMMDDTHHMMSS] Cliente [IP] [búsqueda - origen - destino]
-    char* message;
+    //Se verifica si existe el archivo
+    if(fileLog == NULL){
+        fileLog = fopen("../data/serverlog.txt", "w+");
+    }
+    fseek(fileLog, 0, SEEK_END);
 
-    sprintf(message, "[Fecha %s] Cliente [IP] [Resultado búsqueda:%f - origen: %d - destino: %d]\n", fecha, addr, res, data[0], data[1]);
+    // obtener y formatear fecha como YYYYMMDDTHHMMSS
+    time_t t = time(NULL);
+    struct tm tiempoLocal = *localtime(&t);
+    // El lugar en donde se pondrá la fecha y hora formateadas
+    char fechaHora[70];
+    // El formato. Mira más en https://en.cppreference.com/w/c/chrono/strftime
+
+    char *formato = "%Y%m%dT%H%M%S";
+    
+    // Intentar formatear
+    int bytesEscritos = strftime(fechaHora, sizeof fechaHora, formato, &tiempoLocal);
+    if (bytesEscritos != 0) {
+
+        char message[250];
+
+        sprintf(message, "[Fecha %s] Cliente [%s] [Resultado búsqueda:%f - origen: %d - destino: %d]\n", fechaHora, addr, res, data[0], data[1]);
+        // Revisar la cadena cómo se guarda en ubuntu en el archivo
+
+        fwrite(message, sizeof(char), strlen(message) ,fileLog);       
+
+    } else {
+        printf("Error formateando fecha");
+    }
+    
+    fclose(fileLog); 
 
     return;
 }
