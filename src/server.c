@@ -13,7 +13,7 @@ void archLog(char* addr, int* data, float res);
 int main();
 
 #define PORT 3535
-#define BACKLOG 3
+#define BACKLOG 32
 
 int main(){
     
@@ -47,7 +47,7 @@ int main(){
 
 
     // Creación listen
-    // Escuchar por conexiones entrantes máximo 3 conexiones entrantes en pila
+    // Escuchar por conexiones entrantes máximo 32 conexiones entrantes en pila
 
     if (listen(server_id, BACKLOG) < 0) {
         perror("Error al escuchar por conexiones entrantes");
@@ -55,7 +55,7 @@ int main(){
     }
     
     printf("Esperando conexiones entrantes (max 32)...\n");
-    while (num_clientes <= 32)
+    while (1)
     {
         // Creación Accept
         // Aceptar conexiones de clientes entrantes

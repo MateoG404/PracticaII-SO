@@ -36,7 +36,7 @@ int* input(){
                 errors((&arrayData[0]), 1, 1160);
 
                 getchar(); //Getchar adicional para que consuma el "\n" del int escaneado
-                printf("Presione cualquier tecla para continuar...\n");
+                printf("Presione enter para continuar...\n");
                 getchar();
                 break;
 
@@ -47,7 +47,7 @@ int* input(){
 
                 getchar(); //Getchar adicional para que consuma el "\n" del int escaneado
 
-                printf("Presione cualquier tecla para continuar...\n");
+                printf("Presione enter para continuar...\n");
                 getchar();
                 break;
 
@@ -57,7 +57,7 @@ int* input(){
                 errors(&arrayData[2], 0, 23);
 
                 getchar(); //Getchar adicional para que consuma el "\n" del int escaneado
-                printf("Presione cualquier tecla para continuar...\n");
+                printf("Presione enter para continuar...\n");
                 getchar(); //solo funciona con enter
                 break;
 
@@ -67,7 +67,7 @@ int* input(){
                     printf("Se realizará la busqueda con los datos dados\n ");
 
                     //printf("Origen: %d, Destino: %d, Hora: %d\n", arrayData[0], arrayData[1], arrayData[2]);
-                    printf("Presione cualquier tecla para continuar...");
+                    printf("Presione enter para continuar...");
                     getchar(); //solo funciona con enter
 
 
@@ -88,7 +88,7 @@ int* input(){
 
             default:
                 printf("Opción inválida. Por favor, seleccione una opción válida.\n");
-                printf("Presione cualquier tecla para continuar...");
+                printf("Presione enter para continuar...");
                 getchar(); //solo funciona con enter
                 break;
         
